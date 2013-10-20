@@ -1,5 +1,7 @@
 module Paperclip
   class AttachmentAdapter < AbstractAdapter
+    attr_reader :object_to_copy
+
     def initialize(target)
       @target, @style = case target
       when Paperclip::Attachment
@@ -22,7 +24,11 @@ module Paperclip
 
     def copy_to_tempfile(src)
       if src.respond_to? :copy_to_local_file
-        src.copy_to_local_file(@style, destination.path)
+        if src.options[:storage] == :s3
+          @object_to_copy = src.s3_object(@style)
+        else
+          src.copy_to_local_file(@style, destination.path)
+        end
       else
         FileUtils.cp(src.path(@style), destination.path)
       end
