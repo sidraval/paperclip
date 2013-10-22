@@ -373,7 +373,7 @@ module Paperclip
           end
         end
 
-      @queued_for_write = {}
+        @queued_for_write = {}
       end
 
       def flush_deletes #:nodoc:
